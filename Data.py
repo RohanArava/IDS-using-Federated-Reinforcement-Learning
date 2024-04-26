@@ -39,7 +39,7 @@ def get_nsl_random_splits():
     return splits
 
 def get_mqtt_random_splits():
-    file = "./data/mqtt_train.csv"
+    file = "./data/mqtt.csv"
     df = pd.read_csv(file)
     df = shuffle(df)
     x = df.drop(columns=["target"])

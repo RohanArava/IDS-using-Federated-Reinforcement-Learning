@@ -141,7 +141,7 @@ class DoubleDQNAgent:
                 
                 
             if next_state is not None:
-                target = reward + gamma * torch.max(agent.target_model(torch.tensor(next_state)) , dim= 1)[0]
+                target = reward + self.gamma * torch.max(self.target_model(torch.tensor(next_state)) , dim= 1)[0]
             else:
                 target = torch.tensor(reward)    
                 
@@ -160,7 +160,7 @@ class DoubleDQNAgent:
 #             dd= darkexperienceloss.sum() 
             
 #             loss = loss+ 0.2 * darkexperienceloss
-            qqvalues = agent.model(torch.tensor(state))
+            qqvalues = self.model(torch.tensor(state))
             q_value, _ = torch.max(qqvalues, dim=1)
             loss3 = ((torch.abs(target - q_value)) ** 2).sum()
             
@@ -246,7 +246,7 @@ class DuelingDDQNAgent:
                 
                 
             if next_state is not None:
-                target = reward + gamma * torch.max(agent.target_model(torch.tensor(next_state)) , dim= 1)[0]
+                target = reward + self.gamma * torch.max(self.target_model(torch.tensor(next_state)) , dim= 1)[0]
             else:
                 target = torch.tensor(reward)    
                 
@@ -265,7 +265,7 @@ class DuelingDDQNAgent:
 #             dd= darkexperienceloss.sum() 
             
 #             loss = loss+ 0.2 * darkexperienceloss
-            qqvalues = agent.model(torch.tensor(state))
+            qqvalues = self.model(torch.tensor(state))
             q_value, _ = torch.max(qqvalues, dim=1)
             loss3 = ((torch.abs(target - q_value)) ** 2).sum()
             
@@ -393,7 +393,7 @@ def get_targets(outputs, labels):
         
         output = output.detach().cpu().numpy()
         label = label.detach().cpu().numpy()
-        print(output)
+        # print(output)
         prediction = np.argmax(array_softmax(output))
         reward = get_reward(prediction, label)
         
