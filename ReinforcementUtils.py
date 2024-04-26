@@ -84,15 +84,13 @@ class DarkexperienceReplayMemory:
 
 
 class DoubleDQNAgent:
-    def __init__(self, state_size, action_size, memory_capacity=10000):
-        self.state_size = state_size
-        self.action_size = action_size
+    def __init__(self, net1, net2, memory_capacity=10000):
         self.gamma = 0.95  # discount rate
         self.epsilon = 1.0  # exploration rate
         self.epsilon_min = 0.01
         self.epsilon_decay = 0.995
-        self.model = QNetwork(state_size, action_size)
-        self.target_model = QNetwork(state_size, action_size)
+        self.model = net1
+        self.target_model = net2
         self.target_model.load_state_dict(self.model.state_dict())
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=0.001)
         self.memory = DarkexperienceReplayMemory(memory_capacity)
@@ -293,13 +291,12 @@ class DuelingDDQNAgent:
     def CopyCurrent_and_targetDQNS(self):
         self.target_model.load_state_dict(self.model.state_dict())
 
-def reinforcement_train(net, train_loader):
+def reinforcement_train(net1, net2, train_loader):
     
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(net.parameters(), lr=args.lr)
-    net.train()
-
-    agent = DoubleDQNAgent(1, 2, 10000) 
+    optimizer = torch.optim.SGD(net1.parameters(), lr=args.lr)
+    net2.train()
+    agent = DoubleDQNAgent(10000) 
     for epoch in range(args.epochs):
         k=0
         memory = []
@@ -307,13 +304,12 @@ def reinforcement_train(net, train_loader):
         for features, labels in train_loader:
             feature_arrays= features
             random.shuffle(feature_arrays)
-            agent = DoubleDQNAgent(1, 2, 10000)
             k=k+1
             if k % 5 == 0:
                agent.CopyCurrent_and_targetDQNS()
             labels = labels.type(torch.LongTensor)
             optimizer.zero_grad()
-            outputs = net(features)
+            outputs = net1(features)
             targets = get_targets(outputs, labels)
             loss = criterion(outputs, targets)
             loss.backward()
@@ -331,7 +327,7 @@ def reinforcement_train(net, train_loader):
         for epoch in range(args.epochs):
             for features, labels in sample:
                 optimizer.zero_grad()
-                outputs = net(features)
+                outputs = net1(features)
                 targets = get_targets(outputs, labels)
                 loss = criterion(outputs, targets)
                 loss.backward()

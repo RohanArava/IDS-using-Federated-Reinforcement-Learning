@@ -7,7 +7,7 @@ from MyUtils import test, test_with_fpr
 from ReinforcementUtils import reinforcement_train, dueling_reinforcement_train
 from Args import args
 
-def client_logic(net, train_loaders, test_loader, metrics):
+def client_logic(net1, net2, train_loaders, test_loader, metrics):
         
     class CifarClient(fl.client.NumPyClient):
         
@@ -17,12 +17,15 @@ def client_logic(net, train_loaders, test_loader, metrics):
             self.weight_multiplier = 1
         
         def get_parameters(self):
-            return [val.cpu().numpy() for _, val in net.state_dict().items()]
+            return [[val.cpu().numpy() for _, val in net1.state_dict().items()],[val.cpu().numpy() for _, val in net2.state_dict().items()]]
         
         def set_parameters(self, parameters):
-            params_dict = zip(net.state_dict().keys(), parameters)
-            state_dict = OrderedDict({k: torch.tensor(v) for k, v in params_dict})
-            net.load_state_dict(state_dict, strict=True)
+            params1_dict = zip(net1.state_dict().keys(), parameters[0])
+            state1_dict = OrderedDict({k: torch.tensor(v) for k, v in params1_dict})
+            net1.load_state_dict(state1_dict, strict=True)
+            params2_dict = zip(net2.state_dict().keys(), parameters[1])
+            state2_dict = OrderedDict({k: torch.tensor(v) for k, v in params2_dict})
+            net2.load_state_dict(state2_dict, strict=True)
             
         def fit(self, parameters, config):
             init_time = datetime.now()
@@ -32,7 +35,7 @@ def client_logic(net, train_loaders, test_loader, metrics):
             print('Training on data on split id: ' + str(self.split_id), flush=True)
             self.split_id += 1
             
-            reinforcement_train(net, train_loader)
+            reinforcement_train(net1, net2, train_loader)
             num_examples = len(train_loader.dataset)
             print('Samples in the current round: ' + str(num_examples), flush=True)
             print("Num examples in fit: " + str(num_examples))
@@ -45,7 +48,7 @@ def client_logic(net, train_loaders, test_loader, metrics):
         def evaluate(self, parameters, config):
             init_time = datetime.now()
             self.set_parameters(parameters)
-            loss, accuracy, fpr = test_with_fpr(net, test_loader)
+            loss, accuracy, fpr = test_with_fpr(net1, test_loader)
             num_examples = len(test_loader.dataset)
             
             print('Current weight multiplier: ' + str(self.weight_multiplier), flush=True)
