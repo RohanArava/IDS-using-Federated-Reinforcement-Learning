@@ -17,15 +17,16 @@ def client_logic(net1, net2, train_loaders, test_loader, metrics):
             self.weight_multiplier = 1
         
         def get_parameters(self):
-            return [[val.cpu().numpy() for _, val in net1.state_dict().items()],[val.cpu().numpy() for _, val in net2.state_dict().items()]]
+            # return [[val.cpu().numpy() for _, val in net1.state_dict().items()],[val.cpu().numpy() for _, val in net2.state_dict().items()]]
+            return [val.cpu().numpy() for _, val in net1.state_dict().items()]
         
         def set_parameters(self, parameters):
-            params1_dict = zip(net1.state_dict().keys(), parameters[0])
+            params1_dict = zip(net1.state_dict().keys(), parameters)
             state1_dict = OrderedDict({k: torch.tensor(v) for k, v in params1_dict})
             net1.load_state_dict(state1_dict, strict=True)
-            params2_dict = zip(net2.state_dict().keys(), parameters[1])
-            state2_dict = OrderedDict({k: torch.tensor(v) for k, v in params2_dict})
-            net2.load_state_dict(state2_dict, strict=True)
+            # params2_dict = zip(net2.state_dict().keys(), parameters[1])
+            # state2_dict = OrderedDict({k: torch.tensor(v) for k, v in params2_dict})
+            # net2.load_state_dict(state2_dict, strict=True)
             
         def fit(self, parameters, config):
             init_time = datetime.now()

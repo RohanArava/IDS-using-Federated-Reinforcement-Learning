@@ -6,8 +6,8 @@ import sys
 from datetime import datetime
 import torch
 
-# from Net import Net
-from ReinforcementUtils import QNetwork
+from Net import Net
+# from ReinforcementUtils import QNetwork
 from Server import SaveFedAvgModelStrategy
 from Client import client_logic
 from MyUtils import load_data, delete_files
@@ -70,8 +70,10 @@ def start_client(client_id):
     x, y = splits[client_id]
     train_loaders, test_loader = load_data(x, y)
     
-    net1 = QNetwork(args.n_columns, 2)
-    net2 = QNetwork(args.n_columns, 2)
+    # net1 = QNetwork(args.n_columns, 2)
+    # net2 = QNetwork(args.n_columns, 2)
+    net1 = Net()
+    net2 = Net()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     net1.to(device)
     net2.to(device)

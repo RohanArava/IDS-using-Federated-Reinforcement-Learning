@@ -296,7 +296,7 @@ def reinforcement_train(net1, net2, train_loader):
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(net1.parameters(), lr=args.lr)
     net2.train()
-    agent = DoubleDQNAgent(10000) 
+    agent = DoubleDQNAgent(net1, net2, 10000) 
     for epoch in range(args.epochs):
         k=0
         memory = []

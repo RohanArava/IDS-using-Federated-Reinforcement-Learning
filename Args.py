@@ -1,6 +1,6 @@
 class Args:
     def __init__(self):
-        self.epochs = 100
+        self.epochs = 20
         self.lr = 0.01
         self.random_state = 42
         self.test_set_size = 0.05
@@ -14,7 +14,7 @@ class Args:
         self.isot_columns = 85
         self.mqtt_columns = 33
         
-        self.agent_data_splits = 200
+        self.agent_data_splits = 20
         self.num_clients = 10
         self.fparam_k = 30
         self.fparam_a = 50
@@ -23,7 +23,7 @@ class Args:
 #         Training Specifications
 # =============================================================================
 #         self.dataset = 'isot'
-        self.dataset = 'mqtt'
+        self.dataset = 'nsl'
         self.data_split_type = 'random'
 #         self.data_split_type = 'customized'
 # =============================================================================
