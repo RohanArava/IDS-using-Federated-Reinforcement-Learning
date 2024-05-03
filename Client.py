@@ -3,7 +3,7 @@ import torch
 from collections import OrderedDict
 from datetime import datetime
 
-from MyUtils import test, test_with_fpr
+from MyUtils import test, test_with_fpr, test_with_metrics
 from ReinforcementUtils import reinforcement_train, dueling_reinforcement_train
 from Args import args
 
@@ -49,14 +49,22 @@ def client_logic(net1, net2, train_loaders, test_loader, metrics):
         def evaluate(self, parameters, config):
             init_time = datetime.now()
             self.set_parameters(parameters)
-            loss, accuracy, fpr = test_with_fpr(net1, test_loader)
+            loss, accuracy, fp, tp, fn, tn = test_with_metrics(net1, test_loader)
+
             num_examples = len(test_loader.dataset)
             
             print('Current weight multiplier: ' + str(self.weight_multiplier), flush=True)
             print("Num examples in eval: " + str(num_examples))
             print('Loss: ' + str(loss), flush=True)
             print('Accuracy: ' + str(accuracy), flush=True)
-            print('FPR: ' + str(fpr), flush=True)
+            print('FP: ' + str(fp), flush=True)
+            print('TP: ' + str(tp), flush=True)
+            print('FN: ' + str(fn), flush=True)
+            print('TN: ' + str(tn), flush=True)
+            print('FPR: ' + str(fp/(fp+tn)), flush=True)
+            fpr = fp/(fp+tn)
+            print('Precision: ' + str(tp/(tp+fp)), flush=True)
+            print('Recall: ' + str(tp/(tp+fn)), flush=True)
             
             metrics['accuracy'].append(accuracy)
             metrics['loss'].append(loss)

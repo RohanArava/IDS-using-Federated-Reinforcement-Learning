@@ -68,6 +68,40 @@ def test(net, test_loader):
     accuracy = correct / total
     return loss, accuracy
 
+def test_with_metrics(net, test_loader):
+    criterion = nn.CrossEntropyLoss()
+    correct, total, loss = 0, 0, 0.0
+    fp,tp,fn,tn= 0,0,0,0
+    net.eval()
+    all_labels = []
+    all_predicted = []
+    with torch.no_grad():
+        for features_n, labels_n in test_loader:
+            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+            features = features_n.to(device)
+            labels = labels_n.to(device)
+            labels = labels.type(torch.LongTensor)
+            outputs = net(features)
+            loss += criterion(outputs, labels).item()
+            _, predicted = torch.max(outputs.data, 1)
+            total += labels.size(0)
+            
+            fp += sum([1 for x in zip(labels, predicted) if (x[0]==0 and x[1]==1)])
+            tp += sum([1 for x in zip(labels, predicted) if (x[0]==1 and x[1]==1)])
+            fn += sum([1 for x in zip(labels, predicted) if (x[0]==1 and x[1]==0)])
+            tn += sum([1 for x in zip(labels, predicted) if (x[0]==0 and x[1]==0)])
+            correct += (predicted == labels).sum().item()
+            all_labels+=labels
+            all_predicted+=outputs.data[:,1]
+            
+            # del features, labels
+            gc.collect()
+    fpr, tpr, _, = roc_curve(all_labels, all_predicted)
+    print("fpr: ", fpr, " tpr: ", tpr)
+    loss /= len(test_loader.dataset)
+    accuracy = correct / total
+    return loss, accuracy, fp, tp, fn, tn
+
 def test_with_fpr(net, test_loader):
     criterion = nn.CrossEntropyLoss()
     correct, total, loss = 0, 0, 0.0

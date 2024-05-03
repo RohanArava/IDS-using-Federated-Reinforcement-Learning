@@ -302,8 +302,8 @@ def reinforcement_train(net1, net2, train_loader):
         memory = []
         probability_weights = []         
         for features, labels in train_loader:
-            feature_arrays= features
-            random.shuffle(feature_arrays)
+            # feature_arrays= features
+            # random.shuffle(feature_arrays)
             k=k+1
             if k % 5 == 0:
                agent.CopyCurrent_and_targetDQNS()

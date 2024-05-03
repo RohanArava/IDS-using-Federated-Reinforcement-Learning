@@ -18,6 +18,7 @@ from Data import get_isot_random_splits
 from Data import get_nsl_customized_splits
 from Data import get_isot_customized_splits
 from Data import get_mqtt_random_splits
+from Data import get_tritium_random_splits
 
 
 splits = []
@@ -32,8 +33,13 @@ elif args.dataset == 'isot':
         splits = get_isot_random_splits()
     else:
         splits = get_isot_customized_splits()
-else:
+elif args.dataset == 'mqtt':
     splits = get_mqtt_random_splits()
+elif args.dataset == 'tritium':
+    splits = get_tritium_random_splits()
+else:
+    print("Could not identify dataset")
+    exit(-1)
 
 
 def start_server():

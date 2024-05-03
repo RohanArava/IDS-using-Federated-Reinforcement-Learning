@@ -26,7 +26,6 @@ def get_nsl_random_splits():
     df_x = df.drop('class', axis=1).drop('difficulty_level', axis=1)
     df_y = df['class'].apply(bool_attack).apply(convert_bool)
     x_new = preprocess(df_x, df_y)
-    
     _, n_columns = x_new.shape
     
     xs = np.array_split(x_new, args.num_clients)
@@ -52,6 +51,23 @@ def get_mqtt_random_splits():
         splits.append((x, y))
 
     return splits
+
+def get_tritium_random_splits():
+    file = "C:/Users/suhas/Firefox Downloads/tritium_data(1).csv"
+    df = pd.read_csv(file)
+    df = shuffle(df)
+    x = df.iloc[:, 0:500]
+    y = df["ismalware"]
+    print(x.shape)
+    xs = np.array_split(x, args.num_clients)
+    ys = np.array_split(y, args.num_clients)
+
+    splits = []
+    for x, y in zip(xs, ys):
+        splits.append((x, y))
+
+    return splits
+
 
 def get_isot_random_splits():
     

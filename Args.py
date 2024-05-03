@@ -14,7 +14,7 @@ class Args:
         self.isot_columns = 85
         self.mqtt_columns = 33
         
-        self.agent_data_splits = 20
+        self.agent_data_splits = 10
         self.num_clients = 10
         self.fparam_k = 30
         self.fparam_a = 50
@@ -32,8 +32,9 @@ class Args:
             self.n_columns = self.nsl_columns            
         elif self.dataset=='isot':
             self.n_columns = self.isot_columns
-        else:
+        elif self.dataset=='mqtt':
             self.n_columns = self.mqtt_columns
+        else: self.n_columns = 500
             
         
         if(self.data_split_type == 'customized'):
