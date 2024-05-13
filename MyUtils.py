@@ -97,7 +97,6 @@ def test_with_metrics(net, test_loader):
             # del features, labels
             gc.collect()
     fpr, tpr, _, = roc_curve(all_labels, all_predicted)
-    print("fpr: ", fpr, " tpr: ", tpr)
     loss /= len(test_loader.dataset)
     accuracy = correct / total
     return loss, accuracy, fp, tp, fn, tn
