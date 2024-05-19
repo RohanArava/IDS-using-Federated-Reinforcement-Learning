@@ -12,12 +12,14 @@ class Args:
         
         self.nsl_columns = 33
         self.isot_columns = 85
-        self.mqtt_columns = 33
+        self.mqtt_columns = 46
         
         self.agent_data_splits = 10
         self.num_clients = 10
         self.fparam_k = 30
         self.fparam_a = 50
+        self.param_gamma = 0.6
+        self.param_tau = 0.8
         
 # =============================================================================
 #         Training Specifications

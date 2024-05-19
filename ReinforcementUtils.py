@@ -289,7 +289,11 @@ class DuelingDDQNAgent:
 #             self.epsilon *= self.epsilon_decay
 
     def CopyCurrent_and_targetDQNS(self):
-        self.target_model.load_state_dict(self.model.state_dict())
+        target_sd = self.target_model.state_dict()
+        current_sd =  self.model.state_dict()
+        for key in current_sd:
+            target_sd[key] = current_sd[key]*args.param_tau + target_sd[key]*(1-args.param_tau)
+        self.target_model.load_state_dict(target_sd)
 
 def reinforcement_train(net1, net2, train_loader):
     
@@ -351,9 +355,7 @@ def dueling_reinforcement_train(net, train_loader):
                 feature_arrays= features
                 random.shuffle(feature_arrays)
                 agent = DuelingDDQNAgent(1, 2, 10000)
-                k=k+1
-                if k % 5 == 0:
-                   agent.CopyCurrent_and_targetDQNS()
+                agent.CopyCurrent_and_targetDQNS()
                 labels = labels.type(torch.LongTensor)
                 optimizer.zero_grad()
                 outputs = net(features)

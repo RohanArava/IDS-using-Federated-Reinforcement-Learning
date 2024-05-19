@@ -4,7 +4,7 @@ from collections import OrderedDict
 from datetime import datetime
 
 from MyUtils import test, test_with_fpr, test_with_metrics
-from ReinforcementUtils import reinforcement_train, dueling_reinforcement_train
+from ReinforcementUtils import reinforcement_train
 from Args import args
 
 def client_logic(net1, net2, train_loaders, test_loader, metrics):

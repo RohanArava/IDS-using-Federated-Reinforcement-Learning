@@ -41,6 +41,7 @@ def get_mqtt_random_splits():
     file = "./data/mqtt_alt.csv"
     df = pd.read_csv(file)
     df = shuffle(df)
+    df = df.head(150000)
     x = df.drop(columns=["target"])
     y = df["target"]
     xs = np.array_split(x, args.num_clients)
