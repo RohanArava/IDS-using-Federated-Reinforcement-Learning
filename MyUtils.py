@@ -31,7 +31,7 @@ def get_tensor_loader(x, y):
     x = torch.from_numpy(np.asarray(x)).float()
     y = torch.from_numpy(np.asarray(y)).float()
     tensor_dataset = TensorDataset(x, y)
-    tensor_loader = DataLoader(tensor_dataset, batch_size=args.batch_size, shuffle=True)
+    tensor_loader = DataLoader(tensor_dataset, batch_size=args.batch_size, shuffle=True, drop_last=True)
     return tensor_loader
 
 
